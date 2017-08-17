@@ -16,7 +16,7 @@ var createSongRow = function(songNumber, songName, songLength) {
        + '</tr>'
        ;
 
-var $row = $(template);
+       var $row = $(template);
 
 var clickHandler = function() {
       var songNumber = parseInt ($(this).attr('data-song-number'));
@@ -79,22 +79,6 @@ var currentSongFromAlbum = null;
 
 var $previousButton = $('.main-controls .previous');
 var $nextButton = $('.main-controls .next');
-
-$(document).ready(function() {
-     setCurrentAlbum(albumPicasso);
-     $previousButton.click(previousSong);
-     $nextButton.click(nextSong);
-
-     var albums = [albumPicasso, albumMarconi, albumMontezuma];
-     var index = 1;
-     albumImage.addEventListener("click", function(event) {
-            setCurrentAlbum(albums[index]);
-            index++;
-            if (index == albums.length) {
-              index = 0;
-            }
-      });
- });
 
 var setCurrentAlbum = function(album) {
     currentAlbum = album;
@@ -185,3 +169,19 @@ var previousSong = function() {
     $previousSongNumberCell.html(pauseButtonTemplate);
     $lastSongNumberCell.html(lastSongNumber);
 };
+
+$(document).ready(function() {
+     setCurrentAlbum(albumPicasso);
+     $previousButton.click(previousSong);
+     $nextButton.click(nextSong);
+
+     var albums = [albumPicasso, albumMarconi, albumMontezuma];
+     var index = 1;
+     albumImage.addEventListener("click", function(event) {
+            setCurrentAlbum(albums[index]);
+            index++;
+            if (index == albums.length) {
+              index = 0;
+            }
+      });
+ });
