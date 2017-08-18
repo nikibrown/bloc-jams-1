@@ -12,6 +12,34 @@ var setSong = function(songNumber) {
     setVolume(currentVolume);
 };
 
+var setCurrentTimeInPlayerBar = function(currentTime) {
+  var $currentTimeElement = $('.seek-control .current-time');
+  $currentTimeElement.text(currentTime);
+};
+
+var setTotalTimeInPlayer = function(totalTime) {
+  var $totalTimeElement = $('.seek-control .total-time');
+  $totalTimeElement.text(totalTime);
+};
+
+var filterTimeCode = function(timeInSeconds) {
+  var totalSeconds = Number.parseFloat(timeInSeconds);
+  var wholeSeconds = Math.floor(totalSeconds);
+  var minutes = Math.floor(wholeSeconds / 60);
+
+  var remainingSeconds = wholeSeconds % 60;
+  var output = minutes + ':';
+
+  if (remainingSeconds < 10) {
+    output += '0';
+  }
+
+  output += remainingSeconds;
+
+  return output;
+
+};
+
 var seek = function(time) {
   if (currentSoundFile) {
       currentSoundFile.setTime(time);
@@ -33,7 +61,7 @@ var createSongRow = function(songNumber, songName, songLength) {
         '<tr class="album-view-song-item">'
     + '  <td class="song-item-number" data-song-number="' + songNumber + '">' + songNumber + '</td>'
     + '  <td class="song-item-title">' + songName + '</td>'
-    + '  <td class="song-item-duration">' + songLength + '</td>'
+    + '  <td class="song-item-duration">' + filterTimeCode (songLength) + '</td>'
     + '</tr>'
     ;
 
@@ -129,10 +157,13 @@ var updateSeekBarWhileSongPlays = function() {
 
     currentSoundFile.bind('timeupdate', function(event) {
 
-      var seekBarFillRatio = this.getTime() / this.getDuration();
+      var currentTime = this.getTime();
+      var songLength = this.getDuration();
+      var seekBarFillRatio = currentTime / songLength;
       var $seekBar = $('.seek-control .seek-bar');
 
       updateSeekPercentage($seekBar, seekBarFillRatio);
+      setCurrentTimeInPlayerBar(filterTimeCode(currentTime));
     });
   }
 };
@@ -260,8 +291,9 @@ var updatePlayerBarSong = function() {
     $('.currently-playing .artist-name').text(currentAlbum.artist);
     $('.currently-playing .artist-song-mobile').text(currentSongFromAlbum.title + " - " + currentAlbum.artist);
     $('.main-controls .play-pause').html(playerBarPauseButton);
-};
 
+    setTotalTimeInPlayer(filterTimeCode(currentSongFromAlbum.duration));
+};
 
 var togglePlayFromPlayerBar = function() {
     if (currentSoundFile.isPaused()) {
